@@ -52,3 +52,16 @@ test('dashboard() surfaces API errors', async () => {
   const client = new PgPodcasterClient({ baseUrl: 'https://example.test/api/v1', fetch: fakeFetch(401, '{}') });
   await assert.rejects(client.dashboard(), PgPodcasterAuthError);
 });
+
+test('default fetch is never invoked with the config as `this` (browser Illegal invocation)', async () => {
+  const realFetch = globalThis.fetch;
+  let seenThis = 'unset';
+  globalThis.fetch = function patched() { seenThis = this; return Promise.resolve(new Response('{"status":"ok"}', { status: 200 })); };
+  try {
+    const client = new PgPodcasterClient({ baseUrl: 'https://example.test/api/v1' });
+    await client.health();
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+  assert.ok(seenThis === undefined || seenThis === globalThis, 'fetch must be called unbound or on globalThis');
+});

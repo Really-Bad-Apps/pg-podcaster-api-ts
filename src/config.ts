@@ -16,6 +16,18 @@ export interface ClientOptions {
   fetch?: FetchLike;
 }
 
+/**
+ * Browsers require fetch to be invoked with the global object as `this`;
+ * calling a stored reference as `config.fetch(...)` throws "Illegal invocation".
+ * Wrapping it in an arrow keeps the default fetch bound correctly everywhere.
+ */
+function defaultFetch(): FetchLike | undefined {
+  if (typeof globalThis.fetch !== 'function') {
+    return undefined;
+  }
+  return (input: string, init?: RequestInit): Promise<Response> => globalThis.fetch(input, init);
+}
+
 /** Normalised, validated client configuration. */
 export class ClientConfig {
   readonly baseUrl: string;
@@ -27,7 +39,7 @@ export class ClientConfig {
     if (!options.baseUrl) {
       throw new PgPodcasterConfigError('baseUrl is required');
     }
-    const fetchImpl = options.fetch ?? (globalThis.fetch as FetchLike | undefined);
+    const fetchImpl = options.fetch ?? defaultFetch();
     if (!fetchImpl) {
       throw new PgPodcasterConfigError('No fetch implementation available; pass options.fetch');
     }
