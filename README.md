@@ -47,3 +47,9 @@ npm test        # builds, then runs node --test against dist/
 ## License
 
 MIT
+
+## Podcast metadata
+
+`await client.podcast(podcastId)` returns a `PodcastLookup` discriminated
+union: `found` contains a `PodcastInfo` (`id`, `name`, `artwork_url`), while
+`pending` contains `retry_after` seconds. The caller controls retries.

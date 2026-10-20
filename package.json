@@ -1,6 +1,6 @@
 {
   "name": "@really-bad-apps/pg-podcaster-api",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "TypeScript client for the Podcast Guru podcaster portal REST API (podcaster.podcastguru.io). Fetch-based; works in browsers and Node.",
   "license": "MIT",
   "author": "Jason Byteforge",

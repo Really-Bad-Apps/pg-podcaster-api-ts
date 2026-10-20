@@ -11,4 +11,4 @@ export {
   PgPodcasterValidationError,
   throwForStatus,
 } from './errors';
-export type { DashboardSummary, HealthResponse } from './types';
+export type { DashboardSummary, HealthResponse, PodcastInfo, PodcastLookup } from './types';

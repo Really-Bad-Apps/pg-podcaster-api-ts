@@ -65,3 +65,15 @@ test('default fetch is never invoked with the config as `this` (browser Illegal 
   }
   assert.ok(seenThis === undefined || seenThis === globalThis, 'fetch must be called unbound or on globalThis');
 });
+
+test('podcast() encodes IDs, sends bearer, and preserves pending responses', async () => {
+  let seen;
+  const body = { status: 'pending', podcast: null, retry_after: 3 };
+  const client = new PgPodcasterClient({
+    baseUrl: 'https://example.test/api/v1', apiKey: 'caller',
+    fetch: fakeFetch(202, JSON.stringify(body), (url, init) => { seen = { url, init }; }),
+  });
+  assert.deepEqual(await client.podcast('123/?'), body);
+  assert.equal(seen.url, 'https://example.test/api/v1/podcasts/123%2F%3F');
+  assert.equal(seen.init.headers.Authorization, 'Bearer caller');
+});

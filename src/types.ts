@@ -14,3 +14,13 @@ export interface DashboardSummary {
   /** v1: always empty. Populated once stats are wired in. */
   podcasts: unknown[];
 }
+
+export interface PodcastInfo {
+  id: string;
+  name: string;
+  artwork_url: string | null;
+}
+
+export type PodcastLookup =
+  | { status: 'found'; podcast: PodcastInfo; retry_after: null }
+  | { status: 'pending'; podcast: null; retry_after: number };

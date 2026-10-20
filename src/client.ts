@@ -1,6 +1,6 @@
 import { ClientConfig, ClientOptions } from './config';
 import { throwForStatus } from './errors';
-import { DashboardSummary, HealthResponse } from './types';
+import { DashboardSummary, HealthResponse, PodcastLookup } from './types';
 
 /**
  * Client for the podcaster portal REST API.
@@ -40,5 +40,10 @@ export class PgPodcasterClient {
   /** GET /dashboard: the signed-in podcaster's dashboard. */
   dashboard(): Promise<DashboardSummary> {
     return this.get<DashboardSummary>('dashboard');
+  }
+
+  /** Lookup by Apple podcast ID or canonical podcast ID. */
+  podcast(id: string): Promise<PodcastLookup> {
+    return this.get<PodcastLookup>(`podcasts/${encodeURIComponent(id)}`);
   }
 }
