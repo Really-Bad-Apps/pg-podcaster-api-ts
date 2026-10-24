@@ -77,3 +77,10 @@ test('podcast() encodes IDs, sends bearer, and preserves pending responses', asy
   assert.equal(seen.url, 'https://example.test/api/v1/podcasts/123%2F%3F');
   assert.equal(seen.init.headers.Authorization, 'Bearer caller');
 });
+
+test('podcast preserves additive overview fields and unavailable counts', async () => {
+  const body = { status: 'found', podcast: { id: '123', name: 'Example', artwork_url: null,
+    overview: { catalog: { episode_count: 0 }, op3: { status: 'partial', monthly_downloads: null } } }, retry_after: null };
+  const client = new PgPodcasterClient({ baseUrl: 'https://example.test/api/v1', fetch: fakeFetch(200, JSON.stringify(body)) });
+  assert.deepEqual(await client.podcast('123'), body);
+});
